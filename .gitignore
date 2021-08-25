@@ -1,0 +1,4 @@
+error_log
+logs
+merchant/*.log.txt
+merchant/error_log
