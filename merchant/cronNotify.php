@@ -1,20 +1,14 @@
 <?php
 /**
  * Merchant check the DB & 10 min before expire time, will send reminder by Web2SMS
+ * Merchant make an array to send SMS via WEB2SMS for nutification
  */
 
-require_once realpath('/var/www/html/parcare/vendor/autoload.php');
+// require_once realpath('/var/www/html/parcare/vendor/autoload.php');
 // use Web2sms\Sms\SendSMS;
 
-/**
- * Load .env 
- * To read Logo , ... from .env
- */
-$dotenv = new Dotenv\Dotenv(__DIR__);
-$dotenv->load();
 
 // $sendSMS = new SendSMS();
-
 // $sendSMS->accountType = 'prepaid';                                                  // postpaid | prepaid
 
 // /**
@@ -27,7 +21,7 @@ $dotenv->load();
 // $sendSMS->messages[]  = [
 //                     'sender'            => null,                                                                                          // who send the SMS             // Optional
 //                     'recipient'         => '0732933900',                                                                                  // who receive the SMS          // Mandatory
-//                     'body'              => 'Parcare o sa fii expire in 10 min. doresti sa mai stati, trimiteti DA / NU - '.rand(0,1000),  // The actual text of SMS       // Mandatory
+//                     'body'              => 'Parcare o sa fii expire in 10 min. doresti sa mai stati, trimiteti DA / NU - ex v2p5e da'.rand(0,1000),  // The actual text of SMS       // Mandatory
 //                     'scheduleDatetime'  => null,                                                                                          // Date & Time to send SMS                            // Optional
 //                     'validityDatetime'  => null,                                                                                          // Date & Time of expire SMS // Optional
 //                     'callbackUrl'       => 'http://35.204.43.65/parcare/merchant/web2sms/',                                               // Call back  // Optional    
@@ -39,5 +33,5 @@ $dotenv->load();
 // $result = $sendSMS->sendSMS();
 // echo($result);
 
-echo "Commented temporary to not send Notify SMS - ".rand(1,1000)." - ".getenv('PROJECT_DESCRIPTION');
+echo "Commented temporary to not send Notify SMS - ".rand(1,1000);
 echo "\n";

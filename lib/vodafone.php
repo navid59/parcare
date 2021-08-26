@@ -29,10 +29,11 @@ class Vodafone extends SmsOffline {
 				$verifyResult 	 = $merchant->getVerify($verifyArr);
 				$verifyResultArr = json_decode($verifyResult);
 				if($verifyResultArr->status) {
-					$smsContentStr = getenv('SMS_TEXT_START') ." ". $this->mobilpayShortNumber ." ". getenv('SMS_TEXT_EXAMPLE');
+					$smsContentStr = getenv('SMS_TEXT_START') ." ". $this->mobilpayShortNumber ." ". getenv('SMS_TEXT_EXAMPLE'). getenv('SMS_TEXT_TAX_FALSE');
 					$this->sendResponse( $smsContentStr, 0, 0 );
 				} else {
-					$this->sendResponse( getenv('SMS_TEXT_REPEAT') .getenv('SMS_TEXT_SPACE') . $this->mobilpayShortNumber . " cu  " . $this->uniqueCode , 0, 0 );
+					$smsContentStr = getenv('SMS_TEXT_REPEAT') .getenv('SMS_TEXT_SPACE') . $this->mobilpayShortNumber . " cu  " . $this->uniqueCode ;
+					$this->sendResponse( $smsContentStr , 0, 0 );
 				}
 			break;
 			case $this->uniqueCode.strtolower(self::MOBILPAY_CONFIRM_KEY):
@@ -47,11 +48,22 @@ class Vodafone extends SmsOffline {
 				*/ 
 				if ($verifyResultArr->status) { // daca da
 					// daca status e TRUE 
-					$this->sendResponse( "Comanda Dvs a confirmat cu success, si codul de confirm este : ".$verifyResultArr->code, 1, 0 );
+					$smsContentStr = getenv('SMS_TEXT_CONFIRM_ORDER_TRUE').$verifyResultArr->code . getenv('SMS_TEXT_TAX_TRUE');
+					$this->sendResponse( $smsContentStr, 1, 0 );
 				} else { 
 					//daca status e FALSE, inseamna ca nu este in baza de date retrimitem inca odata un sms free
-					$this->sendResponse( "Pentru a finaliza plata va rugam trimiteti la " . $this->mobilpayShortNumber . " " . $this->uniqueCode . " da", 0, 0 );
+					$smsContentStr = getenv('SMS_TEXT_CONFIRM_ORDER_FALSE')." " . $this->mobilpayShortNumber . " " . getenv('SMS_TEXT_EXAMPLE') . getenv('SMS_TEXT_TAX_FALSE');
+					$this->sendResponse( $smsContentStr , 0, 0 );
 				}
+				break;
+			case $this->uniqueCode.strtolower(self::MOBILPAY_REJECT_KEY):
+					// Send data to Merchant to stop sending Notification
+					$verifyArr['stop'] = true;
+					$verifyResult 	 = $merchant->getVerify($verifyArr);
+					$verifyResultArr = json_decode($verifyResult);
+
+					$smsContentStr = getenv('SMS_TEXT_THANK')." " . $verifyResultArr->code;
+					$this->sendResponse( $smsContentStr , 0, 0 );
 				break;
 			case strpos($this->reciveMsg, '#') !== false :
 				//SEND BY WEB2SMS simulation response: DA
@@ -85,12 +97,21 @@ class Vodafone extends SmsOffline {
 				$web2smsHelperURL = 'http://35.204.43.65/parcare/helper/web2sms.php'; 
 				$helper->sendRequest($notifyArr, $web2smsHelperURL);
 				
-
-				$this->sendResponse( "Parcare este rezervat pt masina cu nr ". $plateNumber . " pt o ore cod-ul de confirmare este XXXX", 1, 0 );
+				$confirmResult = $notify->getVerify($notifyArr);
+				$objConfirmResult = json_decode($confirmResult);
+				
+				if($objConfirmResult->status) {
+					$smsContentStr = "Parcare este rezervat pt masina cu nr ". $plateNumber . " pt o ore cod-ul de confirmare este ".$objConfirmResult->code . getenv('SMS_TEXT_TAX_TRUE');
+					$this->sendResponse( $smsContentStr , 1, 0 );
+				} else {
+					$smsContentStr = "Parcare NU a rezervat pt masina cu nr ". $plateNumber . " cerere din nou " . getenv('SMS_TEXT_TAX_FALSE');
+					$this->sendResponse( $smsContentStr , 0, 0 );
+				}
 				break;
 			default :
 				// in cazul in care sms-ul primit este gol
-				$this->sendResponse( "Mesajul nu este corect, va rugam trimiteti la " . $this->mobilpayShortNumber . " un SMS cu codul " . $this->uniqueCode, 0, 0 );
+				$smsContentStr = "Mesajul nu este corect, va rugam trimiteti la " . $this->mobilpayShortNumber . " un SMS cu codul " . $this->uniqueCode . getenv('SMS_TEXT_TAX_FALSE');
+				$this->sendResponse( $smsContentStr , 0, 0 );
 				break;
 		}
 	}

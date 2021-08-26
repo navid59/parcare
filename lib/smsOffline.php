@@ -7,6 +7,7 @@ class SmsOffline {
     public $mobilpayShortNumber = null; // the mobilpay short number
 	
 	const MOBILPAY_CONFIRM_KEY			= " da"; // have to begin with a white space
+	const MOBILPAY_REJECT_KEY			= " nu"; // have to begin with a white space
 
 	const ERROR_INVALID_PHONE_NUMBER    = 1;
 	const ERROR_INVALID_DESTINATION     = 2;
