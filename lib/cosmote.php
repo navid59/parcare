@@ -24,7 +24,7 @@ class Cosmote extends SmsOffline {
 		switch($this->reciveMsg) {
 			case $this->uniqueCode:
 				// verificam daca in baza de date exista numarul de telefon $_GET[sender] si care astepta raspunsul
-				// daca nu, il inseram in baza de date si il rugam sa trimtia codul + da
+				// daca nu, il inseram in baza de date si il rugam sa trimtia codul de produs
 				// sau rugam sa trimite inca o data SMS cu codeul de produs
 				$verifyResult 	 = $merchant->getVerify($verifyArr);
 				$verifyResultArr = json_decode($verifyResult);

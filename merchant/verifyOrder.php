@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is an simulation to :
+ * - verify if phone number exist in DB
+ * - to generate CONFIRM code
+ * - to figure it out what is NEXT STEP (NEXT WAITING COMMAND) !!!!!
+ */
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -15,7 +21,7 @@ log::setStrLog($jsonData, 'merchantVerifyOrder.log.txt');
 
 
 // Simulate confirm code
-$status = rand(0,1);
+$status = true; //rand(0,1); // return TRUE if exist in DB & return FALSE if not exist
 if($status) {
     $result['status']   = $status;
     $result['code']     = generateRandomString(); 

@@ -3,12 +3,25 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once realpath('vendor/autoload.php');
+use Web2sms\Sms\SendSMS;
+
 require_once('lib/smsOffline.php');
 require_once('lib/cosmote.php');
 require_once('lib/vodafone.php');
 require_once('lib/cosmote.php');
 require_once('lib/notify.php');
 require_once('lib/log.php');
+require_once('lib/autocar.php');
+require_once('lib/helper.php');
+
+/**
+ * Load .env 
+ * To read Logo , ... from .env
+ */
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
 
 if(isset($_GET['rmLog'])) {
     /** Temporary to DELETE Log file */
@@ -23,13 +36,13 @@ $data = $_REQUEST;
 
 
 $smsOffline = new SmsOffline();
-$smsOffline->uniqueCode 		 = "p4321";
+// $smsOffline->uniqueCode 		 = "p4321"; // in navid.ro
+$smsOffline->uniqueCode 		 = "v2p5e"; // in server Magento
 $smsOffline->mobilpayShortNumber = "7415";
 
 $smsOffline->setOperator( $data ['destination'] );
 $smsOffline->setPhoneNumber( $data ['sender'] );
 		
-
 /** to notify Merchant  */
 $notify  = new Notify();
 $notify->notifyURL = 'http://35.204.43.65/parcare/merchant/';
@@ -40,6 +53,7 @@ Log::setArrLog($smsOffline);
 Log::setStrLog($smsOffline->operator);
 
 if(in_array($smsOffline->operator, SmsOffline::OPERATOR_ARR)) {
+	
 	$notifyArr = array(
 		'sender' 	=> $data['sender'],
 		'message' 	=> $data['message'],

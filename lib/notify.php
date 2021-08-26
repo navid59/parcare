@@ -7,13 +7,13 @@ class Notify {
     }
 
     // Send notification json
-    public function sendNotify($jsonStr) {
+    public function sendNotify($jsonStr, $customURL = "") {
         if(!isset($this->notifyURL) || is_null($this->notifyURL)) {
             throw new \Exception('INVALID_NOTIFY_URL');
             exit;
         }
 
-        $url = $this->notifyURL;
+        $url = !empty($customURL) ? $customURL : $this->notifyURL;
         $ch = curl_init($url);
         
         $payload = json_encode($jsonStr); // json DATA
